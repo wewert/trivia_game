@@ -1,7 +1,7 @@
 $(document).ready(function() {
   setTimeout(function() {
     $('#start_button').click();
-  }, .1);
+  }, .5);
 
 $.fn.trivia = function() {
     var _g = this;
