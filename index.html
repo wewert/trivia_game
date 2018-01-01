@@ -1,55 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>Trivia Game</title>
-    <link rel="stylesheet" href="assets/css/style.css">
-  </head>
+<head>
+	<meta charset="utf-8">
+	<title>Trival Trivia</title>
+  <link href="https://fonts.googleapis.com/css?family=Spectral+SC" rel="stylesheet">
 
-  <body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
 
-    <div class="grid">
-    <h1>Trivial Trivia</h1>
-    <h3>You have 10 seconds per question...Go, go GO!!!</h3>
+  <h1>Trivial Trivia</h1>
+    <button id="start_button">Shall we play a game?</button>
+    <div id="timer"></div>
+    <br></br>
+    <div id="question_div"></div>
+    <div id="choices_div"></div>
+    <br></br>
+    <div class="correct"></div>
+    <div class="incorrect"></div>
 
-<!--this commented out code is for the 2 minute counter for the whole game -->
-      <!-- <div id="clockdiv">
-        <div>
-          <span class="minutes"></span>
-          <div class="smalltext">Minutes</div>
-        </div>
-        <div>
-          <span class="seconds"></span>
-          <div class="smalltext">Seconds</div>
-        </div>
-      </div> -->
+  <script src="assets/javascript/app.js"></script>
 
-        <p id="questionTimer"></p>
-
-        <div id="trivia">
-          <div id="quiz">
-
-          <p id="question"></p>
-
-          <div class="buttons">
-            <button id="btn0"><span id="choice0"></span></button>
-            <button id="btn1"><span id="choice1"></span></button>
-            <button id="btn2"><span id="choice2"></span></button>
-            <button id="btn3"><span id="choice3"></span></button>
-          </div>
-
-          <footer>
-            <p id="progress"></p>
-
-          </footer>
-        </div>
-      </div>
-      </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="assets/javascript/controller.js"></script>
-    <script src="assets/javascript/question.js"></script>
-    <script src="assets/javascript/app.js"></script>
-
-  </body>
+</body>
 </html>

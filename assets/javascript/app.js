@@ -1,100 +1,125 @@
-// function getTimeRemaining(endtime) {
-//   var t = Date.parse(endtime) - Date.parse(new Date());
-//   var seconds = Math.floor((t / 1000) % 60);
-//   var minutes = Math.floor((t / 1000 / 60) % 60);
-//   return {
-//     'total': t,
-//     'minutes': minutes,
-//     'seconds': seconds
-//   };
-// }
-//
-// function initializeClock(id, endtime) {
-//   var clock = document.getElementById(id);
-//   var minutesSpan = clock.querySelector('.minutes');
-//   var secondsSpan = clock.querySelector('.seconds');
-//
-//   function updateClock() {
-//     var t = getTimeRemaining(endtime);
-//
-//     minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
-//     secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
-//
-//     if (t.total <= 0) {
-//       clearInterval(timeinterval);
-//     }
-//   }
-//
-//   updateClock();
-//   var timeinterval = setInterval(updateClock, 1000);
-// }
-//
-// var deadline = new Date(Date.parse(new Date()) + 2 * 60 * 1000);
-// initializeClock('clockdiv', deadline);
+$(document).ready(function() {
+  setTimeout(function() {
+    $('#start_button').click();
+  }, .1);
 
-var countDownDate = new Date("Dec 31, 2018 15:37:25").getTime();
-var x = setInterval(function() {
-  var now = new Date().getTime();
-  var sec = countDownDate - now;
-  var seconds = Math.floor((sec % (1000 * 11)) / 1000);
-  document.getElementById("questionTimer").innerHTML = "Seconds left: " + seconds;
+$.fn.trivia = function() {
+    var _g = this;
+    _g.userInput = null;
+    _g.answers = {
+        correct: 0,
+        incorrect: 0
+    };
+    _g.count = 30;
+    _g.current = 0;
+    _g.questions = [{
+        question: "What causes the different variations of colours of different stars?",
+        choices: ["Temperature", "Pressure", "Density", "Radiation from them"],
+        correct: 0
+    }, {
 
-   if (sec <= 1) {
-     clearInterval(x);
-     document.getElementById("questionTimer").innerHTML = "Times up";
-}
- }, 1000);
+        question: "What is the fundamental scientific principle in the operation of a battery?",
+        choices: ["Acid-base interaction", "Dialysis", "Dissociation of electrolytes", "Oxidation-reduction"],
+        correct: 2
 
-function populate() {
-  if(quiz.isEnded()) {
-    showScores();
-  }
-  else {
-    //show question
-    var element = document.getElementById("question");
-    element.innerHTML = quiz.getQuestionIndex().text
+    }, {
+        question: "If the length of a simple pendulum is halved then its period of oscillation is?",
+        choices: ["Doubled", "Halved", "Increased by a factor", "Decreased by a factor"],
+        correct: 3
 
-    var choices = quiz.getQuestionIndex().choices;
-    for(var i = 0; i < choices.length; i++) {
-      var element = document.getElementById("choice" + i);
-      element.innerHTML = choices[i];
+    }, {
+        question: "Equilbruim is a condition that can...",
+        choices: ["Never Change", "Change only if some outside factor changes", "Change only if some internal factor changes", "change only if both factors are switched"],
+        correct: 0
 
-      guess("btn" + i, choices[i]);
-    }
+    }, {
+        question: "When two ice cubes are pressed over each other they unite to form one cube, because of...",
+        choices: ["Vander Waal's forces", "Dipole moment", "Hydrogen bond formation", "Covalent attraction"],
+        correct: 2
+    }];
 
-    showProgress();
-  }
+    _g.ask = function() {
+        if (_g.questions[_g.current]) {
+            $("#timer").html("Time remaining: " + "00:" + _g.count + " secs");
+            $("#question_div").html(_g.questions[_g.current].question);
+            var choicesArr = _g.questions[_g.current].choices;
+            var buttonsArr = [];
+
+            for (var i = 0; i < choicesArr.length; i++) {
+                var button = $('<button>');
+                button.text(choicesArr[i]);
+                button.attr('data-id', i);
+                $('#choices_div').append(button);
+            }
+            window.triviaCounter = setInterval(_g.timer, 1000);
+        } else {
+            $('body').append($('<div />', {
+                text: 'Unanswered: ' + (
+                    _g.questions.length - (_g.answers.correct + _g.answers.incorrect)),
+                class: 'result'
+            }));
+            $('#start_button').text('Play Again?').appendTo('body').show();
+        }
+    };
+    _g.timer = function() {
+        _g.count--;
+        if (_g.count <= 0) {
+            setTimeout(function() {
+                _g.nextQ();
+            });
+
+        } else {
+            $("#timer").html("You have: " + "00:" + _g.count + " secs");
+        }
+    };
+    _g.nextQ = function() {
+        _g.current++;
+        clearInterval(window.triviaCounter);
+        _g.count = 30;
+        $('#timer').html("");
+        setTimeout(function() {
+            _g.cleanUp();
+            _g.ask();
+        }, 1000)
+    };
+    _g.cleanUp = function() {
+        $('div[id]').each(function(item) {
+            $(this).html('');
+        });
+        $('.correct').html('Correct answers: ' + _g.answers.correct);
+        $('.incorrect').html('Incorrect answers: ' + _g.answers.incorrect);
+    };
+    _g.answer = function(correct) {
+        var string = correct ? 'correct' : 'incorrect';
+        _g.answers[string]++;
+        $('.' + string).html(string + ' answers: ' + _g.answers[string]);
+    };
+    return _g;
 };
 
-function guess(id, guess) {
-  var button = document.getElementById(id);
-  button.onclick = function() {
-    quiz.guess(guess);
-    populate();
-  }
-}
+var Trivia;
 
-function showProgress() {
-  var currentQuestionNumber = quiz.questionIndex + 1;
-  var element = document.getElementById("progress");
-  element.innerHTML = "Question " + currentQuestionNumber + "of " + quiz.questions.length;
-}
+$("#start_button").click(function() {
+    $(this).hide();
+    $('.result').remove();
+    $('div').html('');
+    Trivia = new $(window).trivia();
+    Trivia.ask();
+});
 
-function showScores() {
-  var gameOverHtml = "<h1>Result</h1>";
-      gameOverHtml += "<h2 id='score'> Your scores: " + quiz.score + "</h2>";
-      var element = document.getElementById("quiz");
-      element.innerHTML = gameOverHtml;
-}
+$('#choices_div').on('click', 'button', function(e) {
+    var userInput = $(this).data("id"),
+        _g = Trivia || $(window).trivia(),
+        index = _g.questions[_g.current].correct,
+        correct = _g.questions[_g.current].choices[index];
 
-var questions = [
-  new Question("What causes the different variations of colours of different stars?", ["Temperature", "Pressure", "Density", "Radiation from them"], "Temperature"),
-  new Question("What is the fundamental scientific principle in the operation of a battery?", ["Acid-base interaction", "Dialysis", "Dissociation of electrolytes", "Oxidation-reduction"], "Dissociation of electrolytes"),
-  new Question("If the length of a simple pendulum is halved then its period of oscillation is?", ["Doubled", "Halved", "Increased by a factor", "Decreased by a factor"], "Decreased by a factor"),
-  new Question("Equilbruim is a condition that can...", ["Never Change", "Change only if some outside factor changes", "Change only if some internal factor changes", "change only if both factors are switched"], "Never change"),
-  new Question("When two ice cubes are pressed over each other they unite to form one cube, because of...", ["Vander Waal's forces", "Dipole moment", "Hydrogen bond formation", "Covalent attraction"], "Hydrogen bond formation")
-];
-
-var quiz = new Quiz(questions);
-
-populate();
+    if (userInput !== index) {
+        $('#choices_div').text("You wish...the correct answer was: " + correct);
+        _g.answer(false);
+    } else {
+        $('#choices_div').text("Sure, why not...correct answer is: " + correct);
+        _g.answer(true);
+    }
+    _g.nextQ();
+});
+});
