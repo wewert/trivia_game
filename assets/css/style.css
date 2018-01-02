@@ -1,6 +1,7 @@
 body {
   font-family: 'Spectral SC', serif;
-  background-image: url("assets/images/bubblegumcastle.jpg");
+  background-color: black;
+  background-image: ("assets/images/bubblegumcastle.jpg");
   background-size: 100%;
 }
 
